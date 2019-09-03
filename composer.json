@@ -1,5 +1,5 @@
 {
-    "name": "synccentric/cashier",
+    "name": "laravel/cashier",
     "description": "Laravel cashier multiplan",
     "keywords": ["laravel", "stripe", "billing"],
     "license": "MIT",
