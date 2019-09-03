@@ -1,16 +1,16 @@
 <?php
 
-namespace Synccentric\Cashier\Exceptions;
+namespace Laravel\Cashier\Exceptions;
 
 use Exception;
-use Synccentric\Cashier\Subscription;
+use Laravel\Cashier\Subscription;
 
 class SubscriptionUpdateFailure extends Exception
 {
     /**
      * Create a new SubscriptionUpdateFailure instance.
      *
-     * @param  \Synccentric\Cashier\Subscription  $subscription
+     * @param  \Laravel\Cashier\Subscription  $subscription
      * @param  string  $plan
      * @return self
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Synccentric\Cashier;
+namespace Laravel\Cashier;
 
 use Exception;
 use Stripe\Card as StripeCard;
@@ -13,7 +13,7 @@ use Stripe\SetupIntent as StripeSetupIntent;
 use Stripe\Error\Card as StripeCardException;
 use Stripe\PaymentIntent as StripePaymentIntent;
 use Stripe\PaymentMethod as StripePaymentMethod;
-use Synccentric\Cashier\Exceptions\InvalidStripeCustomer;
+use Laravel\Cashier\Exceptions\InvalidStripeCustomer;
 use Stripe\Error\InvalidRequest as StripeErrorInvalidRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -26,7 +26,7 @@ trait Billable
      * @param  int  $amount
      * @param  string  $paymentMethod
      * @param  array  $options
-     * @return \Synccentric\Cashier\Payment
+     * @return \Laravel\Cashier\Payment
      */
     public function charge($amount, $paymentMethod, array $options = [])
     {
@@ -95,7 +95,7 @@ trait Billable
      * @param  int  $amount
      * @param  array  $tabOptions
      * @param  array  $invoiceOptions
-     * @return \Synccentric\Cashier\Invoice|bool
+     * @return \Laravel\Cashier\Invoice|bool
      */
     public function invoiceFor($description, $amount, array $tabOptions = [], array $invoiceOptions = [])
     {
@@ -109,7 +109,7 @@ trait Billable
      *
      * @param  string  $subscription
      * @param  string  $plan
-     * @return \Synccentric\Cashier\SubscriptionBuilder
+     * @return \Laravel\Cashier\SubscriptionBuilder
      */
     public function newSubscription($subscription, $plan)
     {
@@ -176,7 +176,7 @@ trait Billable
      * Get a subscription instance by name.
      *
      * @param  string  $subscription
-     * @return \Synccentric\Cashier\Subscription|null
+     * @return \Laravel\Cashier\Subscription|null
      */
     public function subscription($subscription = 'default')
     {
@@ -216,7 +216,7 @@ trait Billable
      * Invoice the billable entity outside of the regular billing cycle.
      *
      * @param  array  $options
-     * @return \Synccentric\Cashier\Invoice|bool
+     * @return \Laravel\Cashier\Invoice|bool
      */
     public function invoice(array $options = [])
     {
@@ -248,7 +248,7 @@ trait Billable
     /**
      * Get the entity's upcoming invoice.
      *
-     * @return \Synccentric\Cashier\Invoice|null
+     * @return \Laravel\Cashier\Invoice|null
      */
     public function upcomingInvoice()
     {
@@ -267,7 +267,7 @@ trait Billable
      * Find an invoice by ID.
      *
      * @param  string  $id
-     * @return \Synccentric\Cashier\Invoice|null
+     * @return \Laravel\Cashier\Invoice|null
      */
     public function findInvoice($id)
     {
@@ -290,7 +290,7 @@ trait Billable
      * Find an invoice or throw a 404 or 403 error.
      *
      * @param  string  $id
-     * @return \Synccentric\Cashier\Invoice
+     * @return \Laravel\Cashier\Invoice
      */
     public function findInvoiceOrFail($id)
     {
@@ -388,7 +388,7 @@ trait Billable
      * Get a collection of the entity's payment methods.
      *
      * @param  array  $parameters
-     * @return \Illuminate\Support\Collection|\Synccentric\Cashier\PaymentMethod[]
+     * @return \Illuminate\Support\Collection|\Laravel\Cashier\PaymentMethod[]
      */
     public function paymentMethods($parameters = [])
     {
@@ -411,7 +411,7 @@ trait Billable
      * Add a payment method to the customer.
      *
      * @param  \Stripe\PaymentMethod|string  $paymentMethod
-     * @return \Synccentric\Cashier\PaymentMethod
+     * @return \Laravel\Cashier\PaymentMethod
      */
     public function addPaymentMethod($paymentMethod)
     {
@@ -462,7 +462,7 @@ trait Billable
     /**
      * Get the default payment method for the entity.
      *
-     * @return \Synccentric\Cashier\PaymentMethod|\Stripe\Card|\Stripe\BankAccount|null
+     * @return \Laravel\Cashier\PaymentMethod|\Stripe\Card|\Stripe\BankAccount|null
      */
     public function defaultPaymentMethod()
     {
@@ -490,7 +490,7 @@ trait Billable
      * Update customer's default payment method.
      *
      * @param  \Stripe\PaymentMethod|string  $paymentMethod
-     * @return \Synccentric\Cashier\PaymentMethod
+     * @return \Laravel\Cashier\PaymentMethod
      */
     public function updateDefaultPaymentMethod($paymentMethod)
     {
@@ -553,7 +553,7 @@ trait Billable
     /**
      * Fills the model's properties with the payment method from Stripe.
      *
-     * @param  \Synccentric\Cashier\PaymentMethod|\Stripe\PaymentMethod|null  $paymentMethod
+     * @param  \Laravel\Cashier\PaymentMethod|\Stripe\PaymentMethod|null  $paymentMethod
      * @return $this
      */
     protected function fillPaymentMethodDetails($paymentMethod)
@@ -687,7 +687,7 @@ trait Billable
      *
      * @return void
      *
-     * @throws \Synccentric\Cashier\Exceptions\InvalidStripeCustomer
+     * @throws \Laravel\Cashier\Exceptions\InvalidStripeCustomer
      */
     protected function assertCustomerExists()
     {

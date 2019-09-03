@@ -1,10 +1,10 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Unit;
+namespace Laravel\Cashier\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Synccentric\Cashier\Subscription;
-use Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure;
+use Laravel\Cashier\Subscription;
+use Laravel\Cashier\Exceptions\SubscriptionUpdateFailure;
 
 class SubscriptionTest extends TestCase
 {

@@ -1,17 +1,17 @@
 <?php
 
-namespace Synccentric\Cashier\Http\Controllers;
+namespace Laravel\Cashier\Http\Controllers;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Synccentric\Cashier\Payment;
+use Laravel\Cashier\Payment;
 use Illuminate\Support\Carbon;
-use Synccentric\Cashier\Subscription;
+use Laravel\Cashier\Subscription;
 use Illuminate\Routing\Controller;
 use Illuminate\Notifications\Notifiable;
 use Symfony\Component\HttpFoundation\Response;
 use Stripe\PaymentIntent as StripePaymentIntent;
-use Synccentric\Cashier\Http\Middleware\VerifyWebhookSignature;
+use Laravel\Cashier\Http\Middleware\VerifyWebhookSignature;
 
 class WebhookController extends Controller
 {
@@ -195,7 +195,7 @@ class WebhookController extends Controller
      * Get the billable entity instance by Stripe ID.
      *
      * @param  string|null  $stripeId
-     * @return \Synccentric\Cashier\Billable|null
+     * @return \Laravel\Cashier\Billable|null
      */
     protected function getUserByStripeId($stripeId)
     {

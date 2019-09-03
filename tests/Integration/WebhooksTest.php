@@ -1,13 +1,13 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Integration;
+namespace Laravel\Cashier\Tests\Integration;
 
 use Stripe\Plan;
 use Stripe\Product;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Notification;
-use Synccentric\Cashier\Notifications\ConfirmPayment;
-use Synccentric\Cashier\Exceptions\PaymentActionRequired;
+use Laravel\Cashier\Notifications\ConfirmPayment;
+use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class WebhooksTest extends IntegrationTestCase
 {

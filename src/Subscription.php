@@ -1,14 +1,14 @@
 <?php
 
-namespace Synccentric\Cashier;
+namespace Laravel\Cashier;
 
 use Carbon\Carbon;
 use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Stripe\Subscription as StripeSubscription;
-use Synccentric\Cashier\Exceptions\IncompletePayment;
-use Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure;
+use Laravel\Cashier\Exceptions\IncompletePayment;
+use Laravel\Cashier\Exceptions\SubscriptionUpdateFailure;
 
 class Subscription extends Model
 {
@@ -308,7 +308,7 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function incrementQuantity($count = 1)
     {
@@ -323,8 +323,8 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function incrementAndInvoice($count = 1)
     {
@@ -341,7 +341,7 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function decrementQuantity($count = 1)
     {
@@ -356,7 +356,7 @@ class Subscription extends Model
      * @param  int  $quantity
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function updateQuantity($quantity)
     {
@@ -429,7 +429,7 @@ class Subscription extends Model
      * @param  array  $options
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function swap($plan, $options = [])
     {
@@ -486,8 +486,8 @@ class Subscription extends Model
      * @param  array  $options
      * @return $this
      *
-     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
-     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
+     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function swapAndInvoice($plan, $options = [])
     {
@@ -602,9 +602,9 @@ class Subscription extends Model
      * Invoice the subscription outside of the regular billing cycle.
      *
      * @param  array  $options
-     * @return \Synccentric\Cashier\Invoice|bool
+     * @return \Laravel\Cashier\Invoice|bool
      *
-     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
+     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
      */
     public function invoice(array $options = [])
     {
@@ -647,7 +647,7 @@ class Subscription extends Model
     /**
      * Get the latest payment for a Subscription.
      *
-     * @return \Synccentric\Cashier\Payment|null
+     * @return \Laravel\Cashier\Payment|null
      */
     public function latestPayment()
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Unit;
+namespace Laravel\Cashier\Tests\Unit;
 
 use Mockery as m;
 use Carbon\Carbon;
 use Stripe\Discount;
 use Carbon\CarbonTimeZone;
-use Synccentric\Cashier\Invoice;
-use Synccentric\Cashier\Tests\TestCase;
+use Laravel\Cashier\Invoice;
+use Laravel\Cashier\Tests\TestCase;
 use Stripe\Invoice as StripeInvoice;
-use Synccentric\Cashier\Tests\Fixtures\User;
+use Laravel\Cashier\Tests\Fixtures\User;
 
 class InvoiceTest extends TestCase
 {
