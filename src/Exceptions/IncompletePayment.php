@@ -1,24 +1,24 @@
 <?php
 
-namespace Laravel\Cashier\Exceptions;
+namespace Synccentric\Cashier\Exceptions;
 
 use Exception;
 use Throwable;
-use Laravel\Cashier\Payment;
+use Synccentric\Cashier\Payment;
 
 class IncompletePayment extends Exception
 {
     /**
      * The Cashier Payment object.
      *
-     * @var \Laravel\Cashier\Payment
+     * @var \Synccentric\Cashier\Payment
      */
     public $payment;
 
     /**
      * Create a new IncompletePayment instance.
      *
-     * @param  \Laravel\Cashier\Payment  $payment
+     * @param  \Synccentric\Cashier\Payment  $payment
      * @param  string  $message
      * @param  int  $code
      * @param  \Throwable|null  $previous

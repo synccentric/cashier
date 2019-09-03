@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Integration;
+namespace Synccentric\Cashier\Tests\Integration;
 
 class CustomerTest extends IntegrationTestCase
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Laravel\Cashier;
+namespace Synccentric\Cashier;
 
-use Laravel\Cashier\Exceptions\PaymentFailure;
+use Synccentric\Cashier\Exceptions\PaymentFailure;
 use Stripe\PaymentIntent as StripePaymentIntent;
-use Laravel\Cashier\Exceptions\PaymentActionRequired;
+use Synccentric\Cashier\Exceptions\PaymentActionRequired;
 
 class Payment
 {
@@ -101,8 +101,8 @@ class Payment
      *
      * @return void
      *
-     * @throws \Laravel\Cashier\Exceptions\PaymentActionRequired
-     * @throws \Laravel\Cashier\Exceptions\PaymentFailure
+     * @throws \Synccentric\Cashier\Exceptions\PaymentActionRequired
+     * @throws \Synccentric\Cashier\Exceptions\PaymentFailure
      */
     public function validate()
     {

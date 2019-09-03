@@ -1,9 +1,9 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Unit;
+namespace Synccentric\Cashier\Tests\Unit;
 
 use Stripe\PaymentIntent;
-use Laravel\Cashier\Payment;
+use Synccentric\Cashier\Payment;
 use PHPUnit\Framework\TestCase;
 
 class PaymentTest extends TestCase

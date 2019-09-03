@@ -1,9 +1,9 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Integration;
+namespace Synccentric\Cashier\Tests\Integration;
 
-use Laravel\Cashier\Invoice;
-use Laravel\Cashier\Exceptions\InvalidStripeCustomer;
+use Synccentric\Cashier\Invoice;
+use Synccentric\Cashier\Exceptions\InvalidStripeCustomer;
 
 class InvoicesTest extends IntegrationTestCase
 {

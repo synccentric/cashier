@@ -1,14 +1,14 @@
 <?php
 
-namespace Laravel\Cashier;
+namespace Synccentric\Cashier;
 
 use Carbon\Carbon;
 use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Stripe\Subscription as StripeSubscription;
-use Laravel\Cashier\Exceptions\IncompletePayment;
-use Laravel\Cashier\Exceptions\SubscriptionUpdateFailure;
+use Synccentric\Cashier\Exceptions\IncompletePayment;
+use Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure;
 
 class Subscription extends Model
 {
@@ -308,7 +308,7 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function incrementQuantity($count = 1)
     {
@@ -323,8 +323,8 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function incrementAndInvoice($count = 1)
     {
@@ -341,7 +341,7 @@ class Subscription extends Model
      * @param  int  $count
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function decrementQuantity($count = 1)
     {
@@ -356,7 +356,7 @@ class Subscription extends Model
      * @param  int  $quantity
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function updateQuantity($quantity)
     {
@@ -429,7 +429,7 @@ class Subscription extends Model
      * @param  array  $options
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function swap($plan, $options = [])
     {
@@ -486,8 +486,8 @@ class Subscription extends Model
      * @param  array  $options
      * @return $this
      *
-     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
-     * @throws \Laravel\Cashier\Exceptions\SubscriptionUpdateFailure
+     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
+     * @throws \Synccentric\Cashier\Exceptions\SubscriptionUpdateFailure
      */
     public function swapAndInvoice($plan, $options = [])
     {
@@ -602,9 +602,9 @@ class Subscription extends Model
      * Invoice the subscription outside of the regular billing cycle.
      *
      * @param  array  $options
-     * @return \Laravel\Cashier\Invoice|bool
+     * @return \Synccentric\Cashier\Invoice|bool
      *
-     * @throws \Laravel\Cashier\Exceptions\IncompletePayment
+     * @throws \Synccentric\Cashier\Exceptions\IncompletePayment
      */
     public function invoice(array $options = [])
     {
@@ -647,7 +647,7 @@ class Subscription extends Model
     /**
      * Get the latest payment for a Subscription.
      *
-     * @return \Laravel\Cashier\Payment|null
+     * @return \Synccentric\Cashier\Payment|null
      */
     public function latestPayment()
     {
@@ -672,5 +672,65 @@ class Subscription extends Model
             ['id' => $this->stripe_id, 'expand' => $expand],
             $this->owner->stripeOptions()
         );
+    }
+
+    public function subscriptionItems()
+    {
+        return $this->hasMany(SubscriptionItem::class, $this->getForeignKey())->orderby('created_at', 'desc');
+    }
+
+    public function addItem($plan, $prorate = true, $quantity = 1)
+    {
+        $stripeSubscription = $this->asStripeSubscription();
+
+        $stripeSubscriptionItem = $stripeSubscription->items->create(
+            [
+                'plan' => $plan,
+                'prorate' => $prorate,
+                'quantity' => $quantity
+            ]
+        );
+
+        $this->subscriptionItems()->create(
+            [
+                'stripe_id' => $stripeSubscriptionItem->id,
+                'stripe_plan' => $plan,
+                'quantity' => $quantity
+            ]
+        );
+
+        return $this;
+    }
+
+    public function removeItem($plan, $prorate = true)
+    {
+        $item = $this->subscriptionItems()->where('stripe_plan', $plan)->first();
+
+        if (is_null($item)) {
+            return $this;
+        }
+
+        $stripeItem = $item->asStripeSubscriptionItem();
+
+        $stripeItem->delete(
+            [
+                'prorate' => $prorate
+            ]
+        );
+
+        $item->delete();
+
+        return $this;
+
+    }
+
+    public function subscriptionItem($plan)
+    {
+        return $this->subscriptionItems()->where('stripe_plan', $plan)->first();
+    }
+
+    public function hasItem($plan)
+    {
+        return !!$this->subscriptionItem($plan);
     }
 }

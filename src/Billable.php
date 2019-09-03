@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier;
+namespace Synccentric\Cashier;
 
 use Exception;
 use Stripe\Card as StripeCard;
@@ -13,7 +13,7 @@ use Stripe\SetupIntent as StripeSetupIntent;
 use Stripe\Error\Card as StripeCardException;
 use Stripe\PaymentIntent as StripePaymentIntent;
 use Stripe\PaymentMethod as StripePaymentMethod;
-use Laravel\Cashier\Exceptions\InvalidStripeCustomer;
+use Synccentric\Cashier\Exceptions\InvalidStripeCustomer;
 use Stripe\Error\InvalidRequest as StripeErrorInvalidRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -26,7 +26,7 @@ trait Billable
      * @param  int  $amount
      * @param  string  $paymentMethod
      * @param  array  $options
-     * @return \Laravel\Cashier\Payment
+     * @return \Synccentric\Cashier\Payment
      */
     public function charge($amount, $paymentMethod, array $options = [])
     {
@@ -95,7 +95,7 @@ trait Billable
      * @param  int  $amount
      * @param  array  $tabOptions
      * @param  array  $invoiceOptions
-     * @return \Laravel\Cashier\Invoice|bool
+     * @return \Synccentric\Cashier\Invoice|bool
      */
     public function invoiceFor($description, $amount, array $tabOptions = [], array $invoiceOptions = [])
     {
@@ -109,7 +109,7 @@ trait Billable
      *
      * @param  string  $subscription
      * @param  string  $plan
-     * @return \Laravel\Cashier\SubscriptionBuilder
+     * @return \Synccentric\Cashier\SubscriptionBuilder
      */
     public function newSubscription($subscription, $plan)
     {
@@ -176,7 +176,7 @@ trait Billable
      * Get a subscription instance by name.
      *
      * @param  string  $subscription
-     * @return \Laravel\Cashier\Subscription|null
+     * @return \Synccentric\Cashier\Subscription|null
      */
     public function subscription($subscription = 'default')
     {
@@ -216,7 +216,7 @@ trait Billable
      * Invoice the billable entity outside of the regular billing cycle.
      *
      * @param  array  $options
-     * @return \Laravel\Cashier\Invoice|bool
+     * @return \Synccentric\Cashier\Invoice|bool
      */
     public function invoice(array $options = [])
     {
@@ -248,7 +248,7 @@ trait Billable
     /**
      * Get the entity's upcoming invoice.
      *
-     * @return \Laravel\Cashier\Invoice|null
+     * @return \Synccentric\Cashier\Invoice|null
      */
     public function upcomingInvoice()
     {
@@ -267,7 +267,7 @@ trait Billable
      * Find an invoice by ID.
      *
      * @param  string  $id
-     * @return \Laravel\Cashier\Invoice|null
+     * @return \Synccentric\Cashier\Invoice|null
      */
     public function findInvoice($id)
     {
@@ -290,7 +290,7 @@ trait Billable
      * Find an invoice or throw a 404 or 403 error.
      *
      * @param  string  $id
-     * @return \Laravel\Cashier\Invoice
+     * @return \Synccentric\Cashier\Invoice
      */
     public function findInvoiceOrFail($id)
     {
@@ -388,7 +388,7 @@ trait Billable
      * Get a collection of the entity's payment methods.
      *
      * @param  array  $parameters
-     * @return \Illuminate\Support\Collection|\Laravel\Cashier\PaymentMethod[]
+     * @return \Illuminate\Support\Collection|\Synccentric\Cashier\PaymentMethod[]
      */
     public function paymentMethods($parameters = [])
     {
@@ -411,7 +411,7 @@ trait Billable
      * Add a payment method to the customer.
      *
      * @param  \Stripe\PaymentMethod|string  $paymentMethod
-     * @return \Laravel\Cashier\PaymentMethod
+     * @return \Synccentric\Cashier\PaymentMethod
      */
     public function addPaymentMethod($paymentMethod)
     {
@@ -462,7 +462,7 @@ trait Billable
     /**
      * Get the default payment method for the entity.
      *
-     * @return \Laravel\Cashier\PaymentMethod|\Stripe\Card|\Stripe\BankAccount|null
+     * @return \Synccentric\Cashier\PaymentMethod|\Stripe\Card|\Stripe\BankAccount|null
      */
     public function defaultPaymentMethod()
     {
@@ -490,7 +490,7 @@ trait Billable
      * Update customer's default payment method.
      *
      * @param  \Stripe\PaymentMethod|string  $paymentMethod
-     * @return \Laravel\Cashier\PaymentMethod
+     * @return \Synccentric\Cashier\PaymentMethod
      */
     public function updateDefaultPaymentMethod($paymentMethod)
     {
@@ -553,7 +553,7 @@ trait Billable
     /**
      * Fills the model's properties with the payment method from Stripe.
      *
-     * @param  \Laravel\Cashier\PaymentMethod|\Stripe\PaymentMethod|null  $paymentMethod
+     * @param  \Synccentric\Cashier\PaymentMethod|\Stripe\PaymentMethod|null  $paymentMethod
      * @return $this
      */
     protected function fillPaymentMethodDetails($paymentMethod)
@@ -687,7 +687,7 @@ trait Billable
      *
      * @return void
      *
-     * @throws \Laravel\Cashier\Exceptions\InvalidStripeCustomer
+     * @throws \Synccentric\Cashier\Exceptions\InvalidStripeCustomer
      */
     protected function assertCustomerExists()
     {
@@ -789,5 +789,38 @@ trait Billable
     public function stripeOptions(array $options = [])
     {
         return Cashier::stripeOptions($options);
+    }
+
+    public function subscriptionItems()
+    {
+        return $this->hasManyThrough(SubscriptionItem::class, Subscription::class)->orderBy('created_at', 'desc');
+    }
+
+    public function subscriptionItem($plan)
+    {
+        $itemsTable = (new SubscriptionItem)->getTable();
+        return $this->subscriptionItems()->where($itemsTable.'.strip_plan', $plan)->orderBy($itemsTable.'.created_at', 'desc')->first();
+    }
+
+    public function addPlan($plan, $prorate = true, $quantity = 1, $subscription = 'default')
+    {
+        $subscription = $this->subscription($subscription);
+
+        if (!is_null($subscription)) {
+            return $subscription->addItem($plan, $prorate, $quantity);
+        }
+
+        return false;
+    }
+
+    public function removePlan($plan, $prorate = true, $subscription = 'default')
+    {
+        $subscription = $this->subscription($subscription);
+
+        if (is_null($subscription)) {
+            return null;
+        }
+
+        return $subscription->removeItem($plan, $prorate);
     }
 }

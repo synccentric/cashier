@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier;
+namespace Synccentric\Cashier;
 
 use Carbon\Carbon;
 use Dompdf\Dompdf;

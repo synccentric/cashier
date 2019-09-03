@@ -1,16 +1,12 @@
 {
-    "name": "laravel/cashier",
-    "description": "Laravel Cashier provides an expressive, fluent interface to Stripe's subscription billing services.",
+    "name": "synccentric/cashier-multiplan",
+    "description": "Laravel cashier multiplan",
     "keywords": ["laravel", "stripe", "billing"],
     "license": "MIT",
-    "support": {
-        "issues": "https://github.com/laravel/cashier/issues",
-        "source": "https://github.com/laravel/cashier"
-    },
     "authors": [
         {
-            "name": "Taylor Otwell",
-            "email": "taylorotwell@gmail.com"
+            "name": "Synccentric Inc",
+            "email": "info@synccentric.com"
         }
     ],
     "require": {
@@ -40,12 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Laravel\\Cashier\\": "src/"
+            "Synccentric\\Cashier\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Laravel\\Cashier\\Tests\\": "tests/"
+            "Synccentric\\Cashier\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -54,7 +50,7 @@
         },
         "laravel": {
             "providers": [
-                "Laravel\\Cashier\\CashierServiceProvider"
+                "Synccentric\\Cashier\\CashierServiceProvider"
             ]
         }
     },

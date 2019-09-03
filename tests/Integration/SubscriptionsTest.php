@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Integration;
+namespace Synccentric\Cashier\Tests\Integration;
 
 use DateTime;
 use Stripe\Plan;
@@ -8,10 +8,10 @@ use Carbon\Carbon;
 use Stripe\Coupon;
 use Stripe\Product;
 use Illuminate\Support\Str;
-use Laravel\Cashier\Payment;
-use Laravel\Cashier\Subscription;
-use Laravel\Cashier\Exceptions\PaymentFailure;
-use Laravel\Cashier\Exceptions\PaymentActionRequired;
+use Synccentric\Cashier\Payment;
+use Synccentric\Cashier\Subscription;
+use Synccentric\Cashier\Exceptions\PaymentFailure;
+use Synccentric\Cashier\Exceptions\PaymentActionRequired;
 
 class SubscriptionsTest extends IntegrationTestCase
 {
@@ -40,6 +40,8 @@ class SubscriptionsTest extends IntegrationTestCase
      */
     protected static $couponId;
 
+    protected static $addonPlan;
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
@@ -49,6 +51,7 @@ class SubscriptionsTest extends IntegrationTestCase
         static::$otherPlanId = static::$stripePrefix.'monthly-10-'.Str::random(10);
         static::$premiumPlanId = static::$stripePrefix.'monthly-20-premium-'.Str::random(10);
         static::$couponId = static::$stripePrefix.'coupon-'.Str::random(10);
+        static::$addonPlan = static::$stripePrefix.'addon_monthly-1'.Str::random(10);
 
         Product::create([
             'id' => static::$productId,
@@ -85,6 +88,18 @@ class SubscriptionsTest extends IntegrationTestCase
             'amount' => 2000,
             'product' => static::$productId,
         ]);
+
+        Plan::create(
+            [
+                'id' => static::$addonPlan,
+                'nickname' => 'Addon Monthly $1',
+                'currency' => 'USD',
+                'interval' => 'month',
+                'billing_scheme' => 'per_unit',
+                'amount' => 100,
+                'product' => static::$productId
+            ]
+        );
 
         Coupon::create([
             'id' => static::$couponId,
@@ -572,5 +587,70 @@ class SubscriptionsTest extends IntegrationTestCase
             $this->assertInstanceOf(Payment::class, $payment = $subscription->latestPayment());
             $this->assertTrue($payment->requiresAction());
         }
+    }
+
+    public function test_we_can_add_a_plan_to_existing_subscription()
+    {
+        $user = $this->createCustomer('subscriptions_can_be_created');
+
+        $user->newSubscription('main', static::$premiumPlanId)->create('pm_card_visa');
+        $this->assertEquals(1, count($user->subscriptions));
+        $this->assertNotNull($user->subscription('main')->stripe_id);
+
+        $this->assertTrue($user->subscribed('main'));
+        $this->assertTrue($user->subscribedToPlan(static::$premiumPlanId, 'main'));
+        $this->assertFalse($user->subscribedToPlan(static::$premiumPlanId, 'something'));
+        $this->assertFalse($user->subscribedToPlan(static::$otherPlanId, 'main'));
+        $this->assertTrue($user->subscribed('main', static::$premiumPlanId));
+        $this->assertFalse($user->subscribed('main', static::$otherPlanId));
+        $this->assertTrue($user->subscription('main')->active());
+        $this->assertFalse($user->subscription('main')->cancelled());
+        $this->assertFalse($user->subscription('main')->onGracePeriod());
+        $this->assertTrue($user->subscription('main')->recurring());
+        $this->assertFalse($user->subscription('main')->ended());
+
+        $subscription = $user->subscription('main');
+        $subscription->addItem(static::$addonPlan, true, 250);
+        $user->invoice();
+        $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$addonPlan]);
+        $this->assertTrue($subscription->hasItem(static::$addonPlan));
+
+        $invoice = $user->invoices()[0];
+
+        $this->assertEquals('$250.00', $invoice->total());
+        $this->assertFalse($invoice->hasDiscount());
+        $this->assertFalse($invoice->hasStartingBalance());
+        $this->assertNull($invoice->coupon());
+        $this->assertInstanceOf(Carbon::class, $invoice->date());
+    }
+
+    public function test_we_can_remove_a_plan_from_an_existing_subscription()
+    {
+        $user = $this->createCustomer('subscriptions_can_be_created');
+
+        $user->newSubscription('main', static::$premiumPlanId)->create('pm_card_visa');
+        $this->assertEquals(1, count($user->subscriptions));
+        $this->assertNotNull($user->subscription('main')->stripe_id);
+
+        $this->assertTrue($user->subscribed('main'));
+        $this->assertTrue($user->subscribedToPlan(static::$premiumPlanId, 'main'));
+        $this->assertFalse($user->subscribedToPlan(static::$premiumPlanId, 'something'));
+        $this->assertFalse($user->subscribedToPlan(static::$otherPlanId, 'main'));
+        $this->assertTrue($user->subscribed('main', static::$premiumPlanId));
+        $this->assertFalse($user->subscribed('main', static::$otherPlanId));
+        $this->assertTrue($user->subscription('main')->active());
+        $this->assertFalse($user->subscription('main')->cancelled());
+        $this->assertFalse($user->subscription('main')->onGracePeriod());
+        $this->assertTrue($user->subscription('main')->recurring());
+        $this->assertFalse($user->subscription('main')->ended());
+
+        $subscription = $user->subscription('main');
+        $subscription->addItem(static::$addonPlan, true, 250);
+        $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$addonPlan]);
+        $this->assertTrue($subscription->hasItem(static::$addonPlan));
+
+        $subscription->removeItem(static::$addonPlan, true);
+        $this->assertDatabaseMissing('subscription_items', ['stripe_plan' => static::$addonPlan]);
+        $this->assertFalse($subscription->hasItem(static::$addonPlan));
     }
 }

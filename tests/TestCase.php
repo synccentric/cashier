@@ -1,8 +1,8 @@
 <?php
 
-namespace Laravel\Cashier\Tests;
+namespace Synccentric\Cashier\Tests;
 
-use Laravel\Cashier\CashierServiceProvider;
+use Synccentric\Cashier\CashierServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase

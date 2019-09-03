@@ -1,15 +1,15 @@
 <?php
 
-namespace Laravel\Cashier\Exceptions;
+namespace Synccentric\Cashier\Exceptions;
 
-use Laravel\Cashier\Payment;
+use Synccentric\Cashier\Payment;
 
 class PaymentActionRequired extends IncompletePayment
 {
     /**
      * Create a new PaymentActionRequired instance.
      *
-     * @param  \Laravel\Cashier\Payment  $payment
+     * @param  \Synccentric\Cashier\Payment  $payment
      * @return self
      */
     public static function incomplete(Payment $payment)

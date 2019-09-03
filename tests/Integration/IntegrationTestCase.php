@@ -1,12 +1,12 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Integration;
+namespace Synccentric\Cashier\Tests\Integration;
 
 use Stripe\Stripe;
 use Stripe\ApiResource;
 use Stripe\Error\InvalidRequest;
-use Laravel\Cashier\Tests\TestCase;
-use Laravel\Cashier\Tests\Fixtures\User;
+use Synccentric\Cashier\Tests\TestCase;
+use Synccentric\Cashier\Tests\Fixtures\User;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 abstract class IntegrationTestCase extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier\Exceptions;
+namespace Synccentric\Cashier\Exceptions;
 
 use Exception;
 

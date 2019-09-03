@@ -1,8 +1,8 @@
 <?php
 
-namespace Laravel\Cashier\Notifications;
+namespace Synccentric\Cashier\Notifications;
 
-use Laravel\Cashier\Payment;
+use Synccentric\Cashier\Payment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,7 +29,7 @@ class ConfirmPayment extends Notification implements ShouldQueue
     /**
      * Create a new payment confirmation notification.
      *
-     * @param  \Laravel\Cashier\Payment  $payment
+     * @param  \Synccentric\Cashier\Payment  $payment
      * @return void
      */
     public function __construct(Payment $payment)

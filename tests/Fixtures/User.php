@@ -1,8 +1,8 @@
 <?php
 
-namespace Laravel\Cashier\Tests\Fixtures;
+namespace Synccentric\Cashier\Tests\Fixtures;
 
-use Laravel\Cashier\Billable;
+use Synccentric\Cashier\Billable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Model;
 

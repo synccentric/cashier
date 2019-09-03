@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Cashier;
+namespace Synccentric\Cashier;
 
 use Stripe\Stripe;
 use Illuminate\Support\Facades\Route;
@@ -59,7 +59,7 @@ class CashierServiceProvider extends ServiceProvider
         if (Cashier::$registersRoutes) {
             Route::group([
                 'prefix' => config('cashier.path'),
-                'namespace' => 'Laravel\Cashier\Http\Controllers',
+                'namespace' => 'Synccentric\Cashier\Http\Controllers',
                 'as' => 'cashier.',
             ], function () {
                 $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
