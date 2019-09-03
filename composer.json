@@ -45,6 +45,10 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "10.0-dev",
+            "multiplan": "dev-multi-plan"
+        },
         "synccentric": {
             "providers": [
                 "Synccentric\\Cashier\\CashierServiceProvider"
