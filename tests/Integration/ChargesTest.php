@@ -1,9 +1,9 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Integration;
+namespace Laravel\Cashier\Tests\Integration;
 
-use Synccentric\Cashier\Payment;
-use Synccentric\Cashier\Exceptions\PaymentActionRequired;
+use Laravel\Cashier\Payment;
+use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class ChargesTest extends IntegrationTestCase
 {

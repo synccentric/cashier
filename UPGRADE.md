@@ -53,7 +53,7 @@ PR: https://github.com/laravel/cashier/pull/667
 Any payment action will now throw an exception when a payment either fails or when the payment requires a secondary confirmation action in order to be completed. This applies to single charges, invoicing customers, subscribing to a new plan, or swapping plans. After catching these exceptions, you have several options for how to properly handle them. You can either let Stripe handle everything for you (you may configure this in the Stripe dashboard) or use the new, built-in payment confirmation page that is included with Cashier.
 
 ```php
-use Synccentric\Cashier\Exceptions\IncompletePayment;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 
 try {
     $subscription = $user->newSubscription('default', $planId)
@@ -110,7 +110,7 @@ You can determine if a user needs to confirm a payment using the new `hasIncompl
 
 Since SCA regulations require customers to occasionally verify their payment details even while their subscription is active, Cashier can send a payment notification to the customer when off-session payment confirmation is required. For example, this may occur when a subscription is renewing. Cashier's payment notification can be enabled by setting the `CASHIER_PAYMENT_NOTIFICATION` environment variable to a notification class. By default, this notification is disabled. Of course, Cashier includes a notification class you may use for this purpose, but you are free to provide your own notification class if desired:
 
-    CASHIER_PAYMENT_NOTIFICATION=Synccentric\Cashier\Notifications\ConfirmPayment
+    CASHIER_PAYMENT_NOTIFICATION=Laravel\Cashier\Notifications\ConfirmPayment
 
 To ensure that off-session payment confirmation notifications are delivered, verify that [Stripe webhooks are configured](https://laravel.com/docs/billing#handling-stripe-webhooks) for your application and the `invoice.payment_action_required` webhook is enabled in your Stripe dashboard.
 
@@ -123,7 +123,7 @@ Cashier has migrated to the new recommended [Stripe Payment Methods API](https:/
 
 Payment Methods are backwards compatible with the Sources and Tokens APIs, meaning that if you've saved cards as a source on a customer, they can be retrieved with the new Payment Methods API. However, at the moment there isn't a way to retrieve the default source from a customer through the Payment Methods API. Therefore, the `defaultPaymentMethod` method on the `Billable` user will return an instance of a `Stripe\Card` or `Stripe\BankAccount` if no default Payment Method could be found.
 
-It's important to note that any default source set on a customer will still continue to work when creating new subscriptions. However, considering new SCA regulations which take affect September 2019, it's important that you update your integration to the new Payment Methods API as soon as possible and do not use the Sources or Tokens APIs any longer. In fact, if your users do not have a `Synccentric\Cashier\PaymentMethod` attached to their account, you may wish to create one before creating a new subscription:
+It's important to note that any default source set on a customer will still continue to work when creating new subscriptions. However, considering new SCA regulations which take affect September 2019, it's important that you update your integration to the new Payment Methods API as soon as possible and do not use the Sources or Tokens APIs any longer. In fact, if your users do not have a `Laravel\Cashier\PaymentMethod` attached to their account, you may wish to create one before creating a new subscription:
 
 ```php
 use Stripe\Card as StripeCard;
@@ -137,7 +137,7 @@ if ($defaultPaymentMethod instanceof StripeCard ||
 }
 ```
 
-Due to these changes, the `Synccentric\Cashier\Card` class has been replaced with `Synccentric\Cashier\PaymentMethod` class and the old card methods on the Billable trait were removed.
+Due to these changes, the `Laravel\Cashier\Card` class has been replaced with `Laravel\Cashier\PaymentMethod` class and the old card methods on the Billable trait were removed.
 
 For more information regarding storing payment methods, review the [Setup Intents](#setup-intents) documentation below.
 
@@ -188,7 +188,7 @@ In addition, all `raw` methods on the `Invoice` object now return integers inste
 
 #### Invoice Object
 
-All invoice methods in Cashier now return an instance of `Synccentric\Cashier\Invoice` instead of a `Stripe\Invoice` object.
+All invoice methods in Cashier now return an instance of `Laravel\Cashier\Invoice` instead of a `Stripe\Invoice` object.
 
 ### Subscriptions
 
@@ -218,7 +218,7 @@ The following methods now require that the `Billable` user has an associated Str
 
 To accommodate for this new behavior from now on Cashier will cancel that subscription immediately and throw a custom `SubscriptionCreationFailed` exception when a subscription is created with an "incomplete" or "incomplete_expired" status. We've decided to do this because in general you want to let a customer only start using your product when payment was received.
 
-If you were relying on catching the `\Stripe\Error\Card` exception before you should now rely on catching the `Synccentric\Cashier\Exceptions\SubscriptionCreationFailed` exception instead. 
+If you were relying on catching the `\Stripe\Error\Card` exception before you should now rely on catching the `Laravel\Cashier\Exceptions\SubscriptionCreationFailed` exception instead. 
 
 ### Card Failure When Swapping Plans
 

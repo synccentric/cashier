@@ -1,9 +1,9 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Integration;
+namespace Laravel\Cashier\Tests\Integration;
 
 use Stripe\Card as StripeCard;
-use Synccentric\Cashier\PaymentMethod;
+use Laravel\Cashier\PaymentMethod;
 use Stripe\SetupIntent as StripeSetupIntent;
 use Stripe\PaymentMethod as StripePaymentMethod;
 

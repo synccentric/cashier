@@ -1,9 +1,9 @@
 <?php
 
-namespace Synccentric\Cashier\Http\Controllers;
+namespace Laravel\Cashier\Http\Controllers;
 
-use Synccentric\Cashier\Cashier;
-use Synccentric\Cashier\Payment;
+use Laravel\Cashier\Cashier;
+use Laravel\Cashier\Payment;
 use Illuminate\Routing\Controller;
 use Stripe\PaymentIntent as StripePaymentIntent;
 

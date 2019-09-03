@@ -1,6 +1,6 @@
 <?php
 
-namespace Synccentric\Cashier;
+namespace Laravel\Cashier;
 
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -183,7 +183,7 @@ class SubscriptionBuilder
      * Add a new Stripe subscription to the Stripe model.
      *
      * @param  array  $options
-     * @return \Synccentric\Cashier\Subscription
+     * @return \Laravel\Cashier\Subscription
      */
     public function add(array $options = [])
     {
@@ -195,7 +195,7 @@ class SubscriptionBuilder
      *
      * @param  \Stripe\PaymentMethod|string|null  $paymentMethod
      * @param  array  $options
-     * @return \Synccentric\Cashier\Subscription
+     * @return \Laravel\Cashier\Subscription
      */
     public function create($paymentMethod = null, array $options = [])
     {

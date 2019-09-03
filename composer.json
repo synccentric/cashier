@@ -36,12 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Synccentric\\Cashier\\": "src/"
+            "Laravel\\Cashier\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Synccentric\\Cashier\\Tests\\": "tests/"
+            "Laravel\\Cashier\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -50,7 +50,7 @@
         },
         "synccentric": {
             "providers": [
-                "Synccentric\\Cashier\\CashierServiceProvider"
+                "Laravel\\Cashier\\CashierServiceProvider"
             ]
         }
     },

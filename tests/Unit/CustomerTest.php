@@ -1,10 +1,10 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Unit;
+namespace Laravel\Cashier\Tests\Unit;
 
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
-use Synccentric\Cashier\Tests\Fixtures\User;
+use Laravel\Cashier\Tests\Fixtures\User;
 
 class CustomerTest extends TestCase
 {

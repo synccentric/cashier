@@ -1,6 +1,6 @@
 <?php
 
-namespace Synccentric\Cashier\Tests\Integration;
+namespace Laravel\Cashier\Tests\Integration;
 
 use DateTime;
 use Stripe\Plan;
@@ -8,10 +8,10 @@ use Carbon\Carbon;
 use Stripe\Coupon;
 use Stripe\Product;
 use Illuminate\Support\Str;
-use Synccentric\Cashier\Payment;
-use Synccentric\Cashier\Subscription;
-use Synccentric\Cashier\Exceptions\PaymentFailure;
-use Synccentric\Cashier\Exceptions\PaymentActionRequired;
+use Laravel\Cashier\Payment;
+use Laravel\Cashier\Subscription;
+use Laravel\Cashier\Exceptions\PaymentFailure;
+use Laravel\Cashier\Exceptions\PaymentActionRequired;
 
 class SubscriptionsTest extends IntegrationTestCase
 {
