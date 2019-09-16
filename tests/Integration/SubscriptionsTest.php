@@ -613,6 +613,7 @@ class SubscriptionsTest extends IntegrationTestCase
         $subscription->addItem(static::$addonPlan, true, 250);
         $user->invoice();
         $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$addonPlan]);
+        $this->assertTrue($subscription->hasItem(static::$premiumPlanId));
         $this->assertTrue($subscription->hasItem(static::$addonPlan));
 
         $invoice = $user->invoices()[0];
@@ -652,5 +653,39 @@ class SubscriptionsTest extends IntegrationTestCase
         $subscription->removeItem(static::$addonPlan, true);
         $this->assertDatabaseMissing('subscription_items', ['stripe_plan' => static::$addonPlan]);
         $this->assertFalse($subscription->hasItem(static::$addonPlan));
+    }
+
+    public function test_we_can_swap_plans_when_there_are_subscription_items()
+    {
+        $user = $this->createCustomer('subscriptions_can_be_created');
+
+        $user->newSubscription('main', static::$premiumPlanId)->create('pm_card_visa');
+        $this->assertEquals(1, count($user->subscriptions));
+        $this->assertNotNull($user->subscription('main')->stripe_id);
+
+        $this->assertTrue($user->subscribed('main'));
+        $this->assertTrue($user->subscribedToPlan(static::$premiumPlanId, 'main'));
+        $this->assertFalse($user->subscribedToPlan(static::$premiumPlanId, 'something'));
+        $this->assertFalse($user->subscribedToPlan(static::$otherPlanId, 'main'));
+        $this->assertTrue($user->subscribed('main', static::$premiumPlanId));
+        $this->assertFalse($user->subscribed('main', static::$otherPlanId));
+        $this->assertTrue($user->subscription('main')->active());
+        $this->assertFalse($user->subscription('main')->cancelled());
+        $this->assertFalse($user->subscription('main')->onGracePeriod());
+        $this->assertTrue($user->subscription('main')->recurring());
+        $this->assertFalse($user->subscription('main')->ended());
+
+        $subscription = $user->subscription('main');
+        $subscription->addItem(static::$addonPlan, true, 250);
+        $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$addonPlan]);
+        $this->assertTrue($subscription->hasItem(static::$addonPlan));
+
+        // Swap Plan and invoice immediately.
+        $subscription->swapAndInvoice(static::$otherPlanId);
+
+        $this->assertEquals(static::$otherPlanId, $subscription->stripe_plan);
+        $this->assertDatabaseHas('subscriptions', ['stripe_plan' => static::$otherPlanId, 'id' => $subscription->id]);
+        $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$otherPlanId, 'subscription_id' => $subscription->id]);
+        $this->assertDatabaseHas('subscription_items', ['stripe_plan' => static::$addonPlan, 'subscription_id' => $subscription->id]);
     }
 }
