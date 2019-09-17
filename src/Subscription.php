@@ -441,7 +441,7 @@ class Subscription extends Model
 
         $subscription = $this->asStripeSubscription();
 
-        if (is_null($subscription->plan)) {
+        if (count($subscription->items->data) > 1) {
             $mainSubItem = collect($subscription->items->data)->where('id', '!=', 'addon_monthly')->first();
             $mainSubItem->plan = $plan;
             $mainSubItem->prorate = $this->prorate;
